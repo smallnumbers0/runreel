@@ -27,7 +27,6 @@ interface StravaProfile {
 }
 
 export const authConfig: NextAuthConfig = {
-  debug: true,
   providers: [
     {
       id: "strava",
@@ -55,11 +54,6 @@ export const authConfig: NextAuthConfig = {
       },
     },
   ],
-  // Temporarily comment out adapter to test
-  // adapter: SupabaseAdapter({
-  //   url: process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  //   secret: process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  // }),
   callbacks: {
     async jwt({ token, account, profile }) {
       // Initial sign in
@@ -76,11 +70,6 @@ export const authConfig: NextAuthConfig = {
       }
       return session
     },
-  },
-  pages: {
-    signIn: '/',
-    signOut: '/',
-    error: '/',
   },
   session: {
     strategy: "jwt",

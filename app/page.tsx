@@ -83,7 +83,7 @@ export default async function Home() {
           <form
             action={async () => {
               'use server'
-              await signIn('strava')
+              await signIn('strava', { redirectTo: '/dashboard' })
             }}
           >
             <button
