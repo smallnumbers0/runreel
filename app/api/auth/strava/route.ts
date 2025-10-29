@@ -71,9 +71,9 @@ export async function GET(request: NextRequest) {
   // Initiate OAuth flow
   const redirectUri = `${request.nextUrl.origin}/api/auth/strava`
   const scope = 'read,activity:read_all'
-  const state = Math.random().toString(36).substring(7)
+  const stateParam = Math.random().toString(36).substring(7)
 
-  const authUrl = `https://www.strava.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scope}&state=${state}&approval_prompt=auto`
+  const authUrl = `https://www.strava.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scope}&state=${stateParam}&approval_prompt=auto`
 
   return NextResponse.redirect(authUrl)
 }
