@@ -9,18 +9,31 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@auth/supabase-adapter": "^1.11.1",
+    "@remotion/cli": "^4.0.370",
+    "@remotion/player": "^4.0.370",
+    "@supabase/ssr": "^0.7.0",
+    "@supabase/supabase-js": "^2.76.1",
+    "framer-motion": "^12.23.24",
+    "lucide-react": "^0.548.0",
+    "maplibre-gl": "^5.10.0",
+    "next": "16.0.1",
+    "next-auth": "^5.0.0-beta.30",
+    "polyline-encoded": "^0.0.9",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "next": "16.0.1"
+    "remotion": "^4.0.370"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@remotion/bundler": "^4.0.370",
+    "@remotion/renderer": "^4.0.370",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
     "eslint": "^9",
-    "eslint-config-next": "16.0.1"
+    "eslint-config-next": "16.0.1",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }

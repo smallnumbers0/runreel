@@ -1,65 +1,101 @@
-import Image from "next/image";
+import { auth, signIn } from '@/lib/auth'
+import { redirect } from 'next/navigation'
+import Image from 'next/image'
+import { Activity } from 'lucide-react'
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth()
+
+  if (session?.user) {
+    redirect('/dashboard')
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center px-4">
+      <div className="max-w-4xl w-full">
+        <div className="text-center mb-12">
+          <div className="flex justify-center mb-6">
+            <div className="bg-white p-4 rounded-2xl shadow-lg">
+              <Activity className="w-16 h-16 text-blue-600" />
+            </div>
+          </div>
+
+          <h1 className="text-5xl font-bold text-gray-900 mb-4">
+            RunReel
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+          <p className="text-xl text-gray-600 mb-2">
+            Transform Your Strava Runs into Stunning Instagram Stories
+          </p>
+
+          <p className="text-gray-500 max-w-2xl mx-auto">
+            Create beautiful, animated videos from your running routes.
+            Connect your Strava account, select a run, and generate a professional
+            video ready for Instagram Stories in seconds.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
+          <h2 className="text-2xl font-semibold text-center text-gray-900 mb-8">
+            Get Started in 3 Easy Steps
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <div className="text-center">
+              <div className="bg-blue-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                <span className="text-blue-600 font-bold text-lg">1</span>
+              </div>
+              <h3 className="font-semibold mb-2">Connect Strava</h3>
+              <p className="text-gray-600 text-sm">
+                Securely link your Strava account to access your running activities
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="bg-blue-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                <span className="text-blue-600 font-bold text-lg">2</span>
+              </div>
+              <h3 className="font-semibold mb-2">Choose a Run</h3>
+              <p className="text-gray-600 text-sm">
+                Select any of your recent runs to visualize on an interactive map
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="bg-blue-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                <span className="text-blue-600 font-bold text-lg">3</span>
+              </div>
+              <h3 className="font-semibold mb-2">Generate Video</h3>
+              <p className="text-gray-600 text-sm">
+                Create a professional 1080x1920 video perfect for Instagram Stories
+              </p>
+            </div>
+          </div>
+
+          <form
+            action={async () => {
+              'use server'
+              await signIn('strava')
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <button
+              type="submit"
+              className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 px-6 rounded-lg text-lg transition-colors flex items-center justify-center gap-3"
+            >
+              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169" />
+              </svg>
+              Connect with Strava
+            </button>
+          </form>
         </div>
-      </main>
+
+        <div className="text-center text-gray-600 text-sm">
+          <p>
+            Free to use • No credit card required • Your data stays secure
+          </p>
+        </div>
+      </div>
     </div>
-  );
+  )
 }
