@@ -63,6 +63,14 @@ export async function syncWithStrava() {
           if (detailResponse.ok) {
             const detailedRun = await detailResponse.json()
 
+            // Log what we got
+            console.log(`Activity ${detailedRun.id}:`, {
+              hasPolyline: !!detailedRun.map?.polyline,
+              hasSummaryPolyline: !!detailedRun.map?.summary_polyline,
+              polylineLength: detailedRun.map?.polyline?.length || 0,
+              summaryLength: detailedRun.map?.summary_polyline?.length || 0,
+            })
+
             runsToInsert.push({
               id: detailedRun.id.toString(),
               user_id: session.user.id,
@@ -70,13 +78,13 @@ export async function syncWithStrava() {
               name: detailedRun.name || 'Untitled Run',
               distance: detailedRun.distance || 0,
               duration: detailedRun.moving_time || 0,
-              start_date: detailedRun.start_date,
+              start_date: detailedRun.start_date || detailedRun.start_date_local || new Date().toISOString(),
               // Use detailed polyline if available, otherwise summary
               polyline: detailedRun.map?.polyline || detailedRun.map?.summary_polyline || null,
               average_speed: detailedRun.average_speed || 0,
               max_speed: detailedRun.max_speed || 0,
               total_elevation_gain: detailedRun.total_elevation_gain || 0,
-              sport_type: detailedRun.sport_type || 'Run',
+              sport_type: detailedRun.sport_type || detailedRun.type || 'Run',
             })
           } else {
             // Fallback to basic data if detail fetch fails
