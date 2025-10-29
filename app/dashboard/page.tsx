@@ -23,7 +23,13 @@ async function syncWithStrava(userId: string) {
 }
 
 export default async function Dashboard() {
-  const session = await auth()
+  let session = null
+
+  try {
+    session = await auth()
+  } catch (error) {
+    console.error('Auth error:', error)
+  }
 
   if (!session?.user) {
     redirect('/')

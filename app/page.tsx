@@ -4,7 +4,13 @@ import Image from 'next/image'
 import { Activity } from 'lucide-react'
 
 export default async function Home() {
-  const session = await auth()
+  let session = null
+
+  try {
+    session = await auth()
+  } catch (error) {
+    console.error('Auth error:', error)
+  }
 
   if (session?.user) {
     redirect('/dashboard')
