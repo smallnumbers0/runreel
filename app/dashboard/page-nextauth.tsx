@@ -1,4 +1,4 @@
-import { getSession, signOutUser } from '@/lib/simple-auth'
+import { auth, signOut } from '@/lib/auth-new'
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import RunCard from '@/components/RunCard'
@@ -6,8 +6,32 @@ import { Activity, LogOut, RefreshCw } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
+async function syncWithStrava(userId: string) {
+  'use server'
+
+  try {
+    const response = await fetch(`${process.env.NEXTAUTH_URL}/api/strava`, {
+      headers: {
+        'Cookie': `user-id=${userId}`,
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to sync with Strava')
+    }
+  } catch (error) {
+    console.error('Error syncing with Strava:', error)
+  }
+}
+
 export default async function Dashboard() {
-  const session = await getSession()
+  let session = null
+
+  try {
+    session = await auth()
+  } catch (error) {
+    console.error('Auth error:', error)
+  }
 
   if (!session?.user) {
     redirect('/')
@@ -19,7 +43,7 @@ export default async function Dashboard() {
   const { data: runs, error } = await supabase
     .from('runs')
     .select('*')
-    .eq('user_id', session.user.id)
+    .eq('user_id', session.user.id!)
     .order('start_date', { ascending: false })
     .limit(10)
 
@@ -42,8 +66,7 @@ export default async function Dashboard() {
               <form
                 action={async () => {
                   'use server'
-                  await signOutUser()
-                  redirect('/')
+                  await signOut()
                 }}
               >
                 <button
@@ -65,13 +88,21 @@ export default async function Dashboard() {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-3xl font-bold text-gray-900">Your Runs</h2>
 
-            <a
-              href="/api/strava/sync"
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            <form
+              action={async () => {
+                'use server'
+                await syncWithStrava(session.user!.id!)
+                redirect('/dashboard')
+              }}
             >
-              <RefreshCw className="w-5 h-5" />
-              Sync with Strava
-            </a>
+              <button
+                type="submit"
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+              >
+                <RefreshCw className="w-5 h-5" />
+                Sync with Strava
+              </button>
+            </form>
           </div>
 
           {error && (

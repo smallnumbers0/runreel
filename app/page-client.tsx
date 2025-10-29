@@ -1,15 +1,17 @@
-import { getSession } from '@/lib/simple-auth'
-import { redirect } from 'next/navigation'
+'use client'
+
 import { Activity } from 'lucide-react'
-import Link from 'next/link'
 
-export const dynamic = 'force-dynamic'
+export default function Home() {
+  const handleStravaConnect = () => {
+    // Direct OAuth flow without NextAuth
+    const clientId = '104687'
+    const redirectUri = encodeURIComponent('https://runreel.vercel.app/api/auth/callback/strava')
+    const scope = 'read,activity:read_all'
 
-export default async function Home() {
-  const session = await getSession()
+    const stravaAuthUrl = `https://www.strava.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&approval_prompt=auto`
 
-  if (session?.user) {
-    redirect('/dashboard')
+    window.location.href = stravaAuthUrl
   }
 
   return (
@@ -74,15 +76,15 @@ export default async function Home() {
             </div>
           </div>
 
-          <Link
-            href="/api/auth/strava"
-            className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 px-6 rounded-lg text-lg transition-colors flex items-center justify-center gap-3 block text-center"
+          <button
+            onClick={handleStravaConnect}
+            className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 px-6 rounded-lg text-lg transition-colors flex items-center justify-center gap-3"
           >
-            <svg className="w-6 h-6 inline" viewBox="0 0 24 24" fill="currentColor">
+            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
               <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169" />
             </svg>
             Connect with Strava
-          </Link>
+          </button>
         </div>
 
         <div className="text-center text-gray-600 text-sm">

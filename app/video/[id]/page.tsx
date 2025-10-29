@@ -1,4 +1,4 @@
-import { auth } from '@/lib/auth-new'
+import { getSession } from '@/lib/simple-auth'
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import VideoPlayer from '@/components/VideoPlayer'
@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function VideoPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const session = await auth()
+  const session = await getSession()
 
   if (!session?.user) {
     redirect('/')

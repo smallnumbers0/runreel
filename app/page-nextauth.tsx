@@ -1,12 +1,18 @@
-import { getSession } from '@/lib/simple-auth'
+import { auth, signIn } from '@/lib/auth-minimal'
 import { redirect } from 'next/navigation'
+import Image from 'next/image'
 import { Activity } from 'lucide-react'
-import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
 export default async function Home() {
-  const session = await getSession()
+  let session = null
+
+  try {
+    session = await auth()
+  } catch (error) {
+    console.error('Auth error:', error)
+  }
 
   if (session?.user) {
     redirect('/dashboard')
@@ -74,15 +80,22 @@ export default async function Home() {
             </div>
           </div>
 
-          <Link
-            href="/api/auth/strava"
-            className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 px-6 rounded-lg text-lg transition-colors flex items-center justify-center gap-3 block text-center"
+          <form
+            action={async () => {
+              'use server'
+              await signIn('strava', { redirectTo: '/dashboard' })
+            }}
           >
-            <svg className="w-6 h-6 inline" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169" />
-            </svg>
-            Connect with Strava
-          </Link>
+            <button
+              type="submit"
+              className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 px-6 rounded-lg text-lg transition-colors flex items-center justify-center gap-3"
+            >
+              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169" />
+              </svg>
+              Connect with Strava
+            </button>
+          </form>
         </div>
 
         <div className="text-center text-gray-600 text-sm">
