@@ -36,17 +36,31 @@ export async function GET(request: NextRequest) {
 
       // Set cookies for the session
       const cookieStore = await cookies()
+
+      // Store access token
       cookieStore.set('strava_access_token', data.access_token, {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         path: '/',
         maxAge: 60 * 60 * 24 * 7, // 7 days
       })
 
+      // Store refresh token
+      if (data.refresh_token) {
+        cookieStore.set('strava_refresh_token', data.refresh_token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          path: '/',
+          maxAge: 60 * 60 * 24 * 30, // 30 days
+        })
+      }
+
+      // Store athlete info
       cookieStore.set('strava_athlete_id', String(data.athlete.id), {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         path: '/',
         maxAge: 60 * 60 * 24 * 7, // 7 days
@@ -54,7 +68,7 @@ export async function GET(request: NextRequest) {
 
       cookieStore.set('strava_athlete_name', `${data.athlete.firstname} ${data.athlete.lastname}`, {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         path: '/',
         maxAge: 60 * 60 * 24 * 7, // 7 days

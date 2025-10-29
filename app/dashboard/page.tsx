@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import RunCard from '@/components/RunCard'
 import { Activity, LogOut, RefreshCw } from 'lucide-react'
+import { syncWithStrava } from './actions'
 
 export const dynamic = 'force-dynamic'
 
@@ -16,12 +17,23 @@ export default async function Dashboard() {
   const supabase = await createServerSupabaseClient()
 
   // Fetch user's runs
-  const { data: runs, error } = await supabase
-    .from('runs')
-    .select('*')
-    .eq('user_id', session.user.id)
-    .order('start_date', { ascending: false })
-    .limit(10)
+  let runs = null
+  let error = null
+
+  try {
+    const result = await supabase
+      .from('runs')
+      .select('*')
+      .eq('user_id', session.user.id)
+      .order('start_date', { ascending: false })
+      .limit(10)
+
+    runs = result.data
+    error = result.error
+  } catch (e: any) {
+    error = e
+    console.error('Database error:', e)
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -65,18 +77,26 @@ export default async function Dashboard() {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-3xl font-bold text-gray-900">Your Runs</h2>
 
-            <a
-              href="/api/strava/sync"
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-            >
-              <RefreshCw className="w-5 h-5" />
-              Sync with Strava
-            </a>
+            <form action={syncWithStrava}>
+              <button
+                type="submit"
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+              >
+                <RefreshCw className="w-5 h-5" />
+                Sync with Strava
+              </button>
+            </form>
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-6">
-              Error loading runs. Please try again.
+            <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg mb-6">
+              <p className="font-semibold">Database tables may not be set up yet.</p>
+              <p className="mt-2">
+                Please <a href="/setup" className="underline font-medium">follow the setup instructions</a> to create the necessary tables in Supabase.
+              </p>
+              <p className="mt-2 text-sm">
+                Error details: {error.message || 'Table not found'}
+              </p>
             </div>
           )}
 
