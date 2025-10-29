@@ -1,5 +1,3 @@
-import { handlers } from "@/lib/auth-new"
-
-console.log('Route handler loaded for /api/auth/[...nextauth]')
+import { handlers } from "@/lib/auth-minimal"
 
 export const { GET, POST } = handlers
