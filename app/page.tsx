@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation'
 import Image from 'next/image'
 import { Activity } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 export default async function Home() {
   let session = null
 

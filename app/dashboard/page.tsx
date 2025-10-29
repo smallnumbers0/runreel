@@ -4,6 +4,8 @@ import { createServerSupabaseClient } from '@/lib/supabase-server'
 import RunCard from '@/components/RunCard'
 import { Activity, LogOut, RefreshCw } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 async function syncWithStrava(userId: string) {
   'use server'
 
