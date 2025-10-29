@@ -48,9 +48,6 @@ const authConfig: NextAuthConfig = {
   session: {
     strategy: "jwt",
   },
-  jwt: {
-    secret: "eZE1+oIEIrWMi0dmGCkMEBHT7ZyKB5wUe1wdy5IQB1s=",
-  },
   secret: "eZE1+oIEIrWMi0dmGCkMEBHT7ZyKB5wUe1wdy5IQB1s=",
   trustHost: true,
   useSecureCookies: false, // Disable secure cookies for testing
