@@ -62,18 +62,16 @@ export default async function RunDetail({ params }: { params: Promise<{ id: stri
       .single()
 
     if (!error && newVideo) {
-      // Trigger video generation (would normally be handled by a background job)
-      // For MVP, we'll simulate it
-      setTimeout(async () => {
-        // This would be replaced with actual Remotion rendering
-        await supabase
-          .from('videos')
-          .update({
-            status: 'completed',
-            video_url: 'https://example.com/sample-video.mp4', // Placeholder
-          } as any)
-          .eq('id', (newVideo as any).id)
-      }, 5000)
+      // Trigger video generation immediately
+      // Using a sample video for MVP - replace with actual Remotion rendering
+      await supabase
+        .from('videos')
+        .update({
+          status: 'completed',
+          video_url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
+          thumbnail_url: 'https://images.unsplash.com/photo-1571008887538-b36bb32f4571?w=1080&h=1920&fit=crop',
+        } as any)
+        .eq('id', (newVideo as any).id)
 
       redirect(`/video/${(newVideo as any).id}`)
     }

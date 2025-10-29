@@ -38,6 +38,7 @@ export default async function VideoPage({ params }: { params: Promise<{ id: stri
   }
 
   if (video.status === 'processing') {
+    // Auto-refresh the page every 3 seconds to check if video is ready
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
@@ -46,7 +47,7 @@ export default async function VideoPage({ params }: { params: Promise<{ id: stri
             Generating Your Video
           </h2>
           <p className="text-gray-600 mb-6">
-            This usually takes 30-60 seconds. Please wait...
+            Your video will be ready in just a moment...
           </p>
           <Link
             href="/dashboard"
@@ -54,6 +55,9 @@ export default async function VideoPage({ params }: { params: Promise<{ id: stri
           >
             Return to Dashboard
           </Link>
+          <script dangerouslySetInnerHTML={{
+            __html: `setTimeout(() => window.location.reload(), 3000)`
+          }} />
         </div>
       </div>
     )
