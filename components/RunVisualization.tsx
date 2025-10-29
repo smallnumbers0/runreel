@@ -23,7 +23,7 @@ export default function RunVisualization({ runData }: RunVisualizationProps) {
   const map = useRef<maplibregl.Map | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
-  const animationRef = useRef<number>()
+  const animationRef = useRef<number | undefined>(undefined)
   const routeCoordinates = useRef<[number, number][]>([])
   const markerRef = useRef<maplibregl.Marker | null>(null)
 
