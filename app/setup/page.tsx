@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
 -- Create runs table
 CREATE TABLE IF NOT EXISTS runs (
   id TEXT PRIMARY KEY,
-  user_id TEXT REFERENCES user_profiles(id) ON DELETE CASCADE,
+  user_id TEXT NOT NULL,
   strava_id BIGINT UNIQUE,
   name TEXT,
   distance REAL,
@@ -32,8 +32,8 @@ CREATE TABLE IF NOT EXISTS runs (
 -- Create videos table
 CREATE TABLE IF NOT EXISTS videos (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  run_id TEXT REFERENCES runs(id) ON DELETE CASCADE,
-  user_id TEXT REFERENCES user_profiles(id) ON DELETE CASCADE,
+  run_id TEXT NOT NULL,
+  user_id TEXT NOT NULL,
   video_url TEXT,
   thumbnail_url TEXT,
   status TEXT DEFAULT 'processing',
