@@ -1,7 +1,5 @@
 import NextAuth from "next-auth"
 import type { NextAuthConfig } from "next-auth"
-import { SupabaseAdapter } from "@auth/supabase-adapter"
-import { createServiceSupabaseClient } from "./supabase-server"
 
 interface StravaProfile {
   id: number
@@ -75,6 +73,7 @@ export const authConfig: NextAuthConfig = {
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
+  trustHost: true,
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth(authConfig)
