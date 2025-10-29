@@ -27,6 +27,7 @@ interface StravaProfile {
 }
 
 export const authConfig: NextAuthConfig = {
+  debug: true,
   providers: [
     {
       id: "strava",
