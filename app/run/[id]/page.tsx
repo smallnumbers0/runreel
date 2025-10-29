@@ -64,14 +64,20 @@ export default async function RunDetail({ params }: { params: Promise<{ id: stri
     if (!error && newVideo) {
       // Trigger video generation immediately
       // Using a sample video for MVP - replace with actual Remotion rendering
-      await supabase
+      const videoUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+
+      const { error: updateError } = await supabase
         .from('videos')
         .update({
           status: 'completed',
-          video_url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
+          video_url: videoUrl,
           thumbnail_url: 'https://images.unsplash.com/photo-1571008887538-b36bb32f4571?w=1080&h=1920&fit=crop',
         } as any)
         .eq('id', (newVideo as any).id)
+
+      if (updateError) {
+        console.error('Failed to update video:', updateError)
+      }
 
       redirect(`/video/${(newVideo as any).id}`)
     }

@@ -1,7 +1,7 @@
 import { getSession } from '@/lib/simple-auth'
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
-import VideoPlayer from '@/components/VideoPlayer'
+import SimpleVideoPlayer from '@/components/SimpleVideoPlayer'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
@@ -112,9 +112,8 @@ export default async function VideoPage({ params }: { params: Promise<{ id: stri
           </p>
         </div>
 
-        <VideoPlayer
-          videoUrl={video.video_url}
-          runName={video.runs?.name || 'RunReel'}
+        <SimpleVideoPlayer
+          videoUrl={video.video_url || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'}
         />
       </main>
     </div>
