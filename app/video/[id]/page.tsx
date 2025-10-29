@@ -1,7 +1,7 @@
 import { getSession } from '@/lib/simple-auth'
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
-import SimpleVideoPlayer from '@/components/SimpleVideoPlayer'
+import RunVisualization from '@/components/RunVisualization'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
@@ -103,18 +103,13 @@ export default async function VideoPage({ params }: { params: Promise<{ id: stri
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {video.runs?.name || 'Your Run Video'}
-          </h1>
-          <p className="text-gray-600">
-            Your video is ready! Download it or share directly to Instagram Stories.
-          </p>
-        </div>
-
-        <SimpleVideoPlayer
-          videoUrl={video.video_url || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'}
-        />
+        {video.runs ? (
+          <RunVisualization runData={video.runs} />
+        ) : (
+          <div className="text-center p-8 bg-yellow-50 rounded-lg">
+            <p className="text-yellow-800">Run data not found. Please try generating again.</p>
+          </div>
+        )}
       </main>
     </div>
   )

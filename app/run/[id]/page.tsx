@@ -103,7 +103,7 @@ export default async function RunDetail({ params }: { params: Promise<{ id: stri
                 className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
               >
                 <Video className="w-5 h-5" />
-                View Video
+                View Visualization
               </Link>
             ) : (
               <form action={generateVideo}>
@@ -112,7 +112,7 @@ export default async function RunDetail({ params }: { params: Promise<{ id: stri
                   className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
                 >
                   <Video className="w-5 h-5" />
-                  Generate Video
+                  Create Visualization
                 </button>
               </form>
             )}
