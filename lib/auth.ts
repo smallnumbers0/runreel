@@ -55,46 +55,26 @@ export const authConfig: NextAuthConfig = {
       },
     },
   ],
-  adapter: SupabaseAdapter({
-    url: process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    secret: process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  }),
+  // Temporarily comment out adapter to test
+  // adapter: SupabaseAdapter({
+  //   url: process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  //   secret: process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  // }),
   callbacks: {
-    async session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id
+    async jwt({ token, account, profile }) {
+      // Initial sign in
+      if (account && profile) {
+        token.accessToken = account.access_token
+        token.refreshToken = account.refresh_token
+        token.id = profile.id
+      }
+      return token
+    },
+    async session({ session, token }) {
+      if (session.user && token) {
+        session.user.id = token.id as string
       }
       return session
-    },
-    async signIn({ user, account }) {
-      if (account?.provider === "strava") {
-        try {
-          const supabase = await createServiceSupabaseClient()
-
-          // Store Strava tokens in user_profiles table
-          const { error } = await supabase
-            .from('user_profiles')
-            .upsert({
-              user_id: user.id!,
-              strava_athlete_id: parseInt(account.providerAccountId),
-              strava_access_token: account.access_token,
-              strava_refresh_token: account.refresh_token,
-              strava_token_expires_at: account.expires_at
-                ? new Date(account.expires_at * 1000).toISOString()
-                : null,
-            })
-            .eq('user_id', user.id!)
-
-          if (error) {
-            console.error('Error saving Strava tokens:', error)
-            return false
-          }
-        } catch (error) {
-          console.error('Error in signIn callback:', error)
-          return false
-        }
-      }
-      return true
     },
   },
   pages: {
@@ -103,7 +83,7 @@ export const authConfig: NextAuthConfig = {
     error: '/',
   },
   session: {
-    strategy: "database",
+    strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
 }
