@@ -370,11 +370,36 @@ export default function RunVisualization({ runData }: RunVisualizationProps) {
           </div>
         </>
       ) : (
-        <div className="bg-white rounded-b-xl border border-t-0 border-gray-200 p-8 text-center">
-          <p className="text-gray-600">No route data available for this run.</p>
-          <p className="text-sm text-gray-500 mt-2">
-            Make sure your Strava activity has GPS data.
-          </p>
+        <div className="bg-white rounded-b-xl border border-t-0 border-gray-200 p-8">
+          <div className="text-center mb-6">
+            <p className="text-gray-600 text-lg font-medium mb-2">No route data available for this run</p>
+            <p className="text-gray-500">
+              This can happen if:
+            </p>
+          </div>
+
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-left">
+            <ul className="space-y-2 text-sm text-yellow-800">
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>The activity was recorded without GPS (indoor treadmill run)</span>
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>GPS data was not captured properly during the run</span>
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>The activity privacy settings restrict map visibility</span>
+              </li>
+            </ul>
+
+            <div className="mt-4 p-3 bg-blue-50 rounded border border-blue-200">
+              <p className="text-blue-800 text-sm">
+                <strong>Try this:</strong> Click "Sync with Strava" in the dashboard to fetch the latest data with full GPS details.
+              </p>
+            </div>
+          </div>
         </div>
       )}
 

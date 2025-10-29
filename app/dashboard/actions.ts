@@ -45,26 +45,83 @@ export async function syncWithStrava() {
 
     // Store runs in database
     if (runs.length > 0) {
-      const runsToInsert = runs.map((run: any) => ({
-        id: run.id.toString(),
-        user_id: session.user.id,
-        strava_id: run.id,
-        name: run.name || 'Untitled Run',
-        distance: run.distance || 0,
-        duration: run.moving_time || 0,
-        start_date: run.start_date,
-        polyline: run.map?.summary_polyline || null,
-        average_speed: run.average_speed || 0,
-        max_speed: run.max_speed || 0,
-        total_elevation_gain: run.total_elevation_gain || 0,
-        sport_type: run.sport_type || 'Run',
-      }))
+      const runsToInsert = []
 
-      await supabase
-        .from('runs')
-        .upsert(runsToInsert, {
-          onConflict: 'id',
-        })
+      // Fetch detailed data for each run to get the full polyline
+      for (const run of runs) {
+        try {
+          // Get detailed activity data
+          const detailResponse = await fetch(
+            `https://www.strava.com/api/v3/activities/${run.id}`,
+            {
+              headers: {
+                'Authorization': `Bearer ${session.user.accessToken}`,
+              },
+            }
+          )
+
+          if (detailResponse.ok) {
+            const detailedRun = await detailResponse.json()
+
+            runsToInsert.push({
+              id: detailedRun.id.toString(),
+              user_id: session.user.id,
+              strava_id: detailedRun.id,
+              name: detailedRun.name || 'Untitled Run',
+              distance: detailedRun.distance || 0,
+              duration: detailedRun.moving_time || 0,
+              start_date: detailedRun.start_date,
+              // Use detailed polyline if available, otherwise summary
+              polyline: detailedRun.map?.polyline || detailedRun.map?.summary_polyline || null,
+              average_speed: detailedRun.average_speed || 0,
+              max_speed: detailedRun.max_speed || 0,
+              total_elevation_gain: detailedRun.total_elevation_gain || 0,
+              sport_type: detailedRun.sport_type || 'Run',
+            })
+          } else {
+            // Fallback to basic data if detail fetch fails
+            runsToInsert.push({
+              id: run.id.toString(),
+              user_id: session.user.id,
+              strava_id: run.id,
+              name: run.name || 'Untitled Run',
+              distance: run.distance || 0,
+              duration: run.moving_time || 0,
+              start_date: run.start_date,
+              polyline: run.map?.summary_polyline || null,
+              average_speed: run.average_speed || 0,
+              max_speed: run.max_speed || 0,
+              total_elevation_gain: run.total_elevation_gain || 0,
+              sport_type: run.sport_type || 'Run',
+            })
+          }
+        } catch (error) {
+          console.error(`Failed to fetch details for activity ${run.id}:`, error)
+          // Use basic data if fetching details fails
+          runsToInsert.push({
+            id: run.id.toString(),
+            user_id: session.user.id,
+            strava_id: run.id,
+            name: run.name || 'Untitled Run',
+            distance: run.distance || 0,
+            duration: run.moving_time || 0,
+            start_date: run.start_date,
+            polyline: run.map?.summary_polyline || null,
+            average_speed: run.average_speed || 0,
+            max_speed: run.max_speed || 0,
+            total_elevation_gain: run.total_elevation_gain || 0,
+            sport_type: run.sport_type || 'Run',
+          })
+        }
+      }
+
+      if (runsToInsert.length > 0) {
+        await supabase
+          .from('runs')
+          .upsert(runsToInsert, {
+            onConflict: 'id',
+          })
+      }
     }
   } catch (error) {
     console.error('Sync error:', error)

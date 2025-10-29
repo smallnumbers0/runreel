@@ -2,8 +2,8 @@ import { getSession, signOutUser } from '@/lib/simple-auth'
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import RunCard from '@/components/RunCard'
-import { Activity, LogOut, RefreshCw } from 'lucide-react'
-import { syncWithStrava } from './actions'
+import { Activity, LogOut } from 'lucide-react'
+import SyncButton from './sync-button'
 
 export const dynamic = 'force-dynamic'
 
@@ -77,15 +77,7 @@ export default async function Dashboard() {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-3xl font-bold text-gray-900">Your Runs</h2>
 
-            <form action={syncWithStrava}>
-              <button
-                type="submit"
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-              >
-                <RefreshCw className="w-5 h-5" />
-                Sync with Strava
-              </button>
-            </form>
+            <SyncButton />
           </div>
 
           {error && (
