@@ -30,9 +30,69 @@ export default function DebugDataPage() {
         <h1 className="text-2xl font-bold mb-6">Strava Sync Debug</h1>
 
         {data?.error ? (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <p className="text-red-800 font-semibold">Error: {data.error}</p>
-            <p className="text-red-700">{data.message}</p>
+          <div className="space-y-4">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <p className="text-red-800 font-semibold text-lg mb-2">
+                Error: {data.error}
+              </p>
+              {data.status && (
+                <p className="text-red-700">
+                  Status Code: {data.status} - {data.statusText}
+                </p>
+              )}
+              {data.details && (
+                <p className="text-red-600 text-sm mt-2">
+                  Details: {data.details}
+                </p>
+              )}
+            </div>
+
+            {data.possibleCauses && (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <p className="font-semibold text-yellow-800 mb-2">Possible Causes:</p>
+                <ul className="list-disc list-inside text-yellow-700 space-y-1">
+                  {data.possibleCauses.map((cause: string, i: number) => (
+                    <li key={i}>{cause}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {data.solution && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <p className="font-semibold text-blue-800 mb-2">Solution:</p>
+                <p className="text-blue-700">{data.solution}</p>
+
+                <div className="mt-4 flex gap-3">
+                  {data.status === 401 && (
+                    <>
+                      <button
+                        onClick={async () => {
+                          const res = await fetch('/api/auth/refresh')
+                          const result = await res.json()
+                          if (result.success) {
+                            window.location.reload()
+                          } else {
+                            alert('Please sign in again')
+                            window.location.href = '/'
+                          }
+                        }}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                      >
+                        Try Refresh Token
+                      </button>
+
+                      <a
+                        href="/"
+                        className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg inline-block"
+                      >
+                        Sign In Again
+                      </a>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div className="space-y-6">

@@ -18,10 +18,27 @@ export async function GET() {
     })
 
     if (!response.ok) {
+      const errorText = await response.text()
       return NextResponse.json({
         error: 'Strava API error',
         status: response.status,
         statusText: response.statusText,
+        details: errorText,
+        possibleCauses: response.status === 401 ? [
+          'Access token has expired',
+          'Need to re-authenticate with Strava',
+          'Token was revoked'
+        ] : response.status === 429 ? [
+          'Rate limit exceeded',
+          'Too many API calls',
+          'Wait 15 minutes and try again'
+        ] : [
+          'Unknown API error',
+          'Check Strava service status'
+        ],
+        solution: response.status === 401 ?
+          'Sign out and sign in again to get a new access token' :
+          'Try again later or contact support'
       }, { status: 500 })
     }
 
