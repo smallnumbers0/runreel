@@ -1,4 +1,4 @@
-import { auth, signOut } from '@/lib/auth'
+import { auth, signOut } from '@/lib/auth-new'
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import RunCard from '@/components/RunCard'

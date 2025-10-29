@@ -1,4 +1,4 @@
-import { auth, signIn } from '@/lib/auth'
+import { auth, signIn } from '@/lib/auth-new'
 import { redirect } from 'next/navigation'
 import Image from 'next/image'
 import { Activity } from 'lucide-react'
